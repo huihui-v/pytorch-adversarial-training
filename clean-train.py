@@ -117,16 +117,11 @@ def run(lr, max_epoch, batch_size, dataroot, device_id):
 
             output = model(data)
 
-            clean_output = model(data)
-
             loss = criterion(output, target)
-            clean_loss = criterion(clean_output, target)
             running_loss += loss.detach().item()
-            running_loss += clean_loss.detach().item()
-            processbar.set_postfix({"Loss r.": loss.detach().item()+clean_loss.detach().item()})
+            processbar.set_postfix({"Loss r.": loss.detach().item()})
 
             optimizer.zero_grad()
-            loss = loss + clean_loss
             loss.backward()
             optimizer.step()
 
