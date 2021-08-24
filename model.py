@@ -11,11 +11,6 @@ def _init_weight(m):
         nn.init.kaiming_normal_(m.weight.data)
         nn.init.constant_(m.weight.bias)
 
-def _init_fc(m):
-    nn.init.normal_(m.weight.data)
-    if m.bias is not None:
-        nn.init.constant_(m.bias.data, 0.)
-
 class Normalization(nn.Module):
     def __init__(self, mean, std, n_channels=3):
         super(Normalization, self).__init__()
@@ -68,13 +63,3 @@ class resnet18_small(nn.Module):
         y = self.classifier(f)
 
         return y
-
-def finetune(model):
-    if isinstance(model, nn.DataParallel) or isinstance(model, nn.parallel.DistributedDataParallel):
-        finetune = copy.deepcopy(model.module)
-    else:
-        finetune = copy.deepcopy(model)
-
-    finetune.classifier.apply(_init_fc)
-
-    return finetune
